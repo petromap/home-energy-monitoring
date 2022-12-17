@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    restart: "on-failure"
+    ports:
+      - "15432:15432/tcp"
+    networks:
+      - test-iot-net
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres1234
+      POSTGRES_DB: test_iot
+    volumes:
+      - ${HOME}/test-iot-net/data/postgres:/var/lib/postgresql/data
+  pgadmin4:
+    image: dpage/pgadmin4:latest
+    restart: "on-failure"
+    ports:
+      - "15050:15050/tcp"
+    networks:
+      - test-iot-net
+    environment:
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: SuperSecret
+      PGADMIN_DISABLE_POSTFIX: 1
+    volumes:
+      - ${HOME}/test-iot-net/data/pgadmin:/var/lib/pgadmin
+  grafana:
+    image: grafana/grafana-oss:latest
+    restart: "on-failure"
+    ports:
+      - "13000:13000/tcp"
+    networks:
+      - test-iot-net
+    volumes:
+      - ${HOME}/test-iot-net/data/grafana:/var/lib/grafana
+    user: grafana
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    restart: on-failure
+    ports:
+      - "11883:11883/tcp"
+    networks:
+      - test-iot-net
+    volumes:
+      - ${HOME}/test-iot-net/data/mosquitto/config:/mosquitto/config
+      - ${HOME}/test-iot-net/data/mosquitto/data:/mosquitto/data
+      - ${HOME}/test-iot-net/data/mosquitto/logs:/mosquitto/logs
+networks:
+  test-iot-net:
