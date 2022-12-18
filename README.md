@@ -36,3 +36,37 @@ https://pypi.org/project/pytest-postgresql/
 
 https://gist.github.com/graphaelli/906b624c18f77f50da5cd0cd4211c3c8
 
+## TODO:
+ * entry points in pyproject.toml
+ * double check pyproject.toml URLs etc.
+
+*******************
+
+### Development Environment Creation
+
+Fork the repository and clone your fork to you computer.
+
+```bash
+git clone https://github.com/<username>/home-energy-monitoring.git
+cd home-energy-monitoring
+```
+We recommend using the `venv` module for creating virtual environment for this development.
+```bash
+python3.10 -n venv venv
+source venv/bin/activate
+# or venv/Scripts/activate (Windows)
+pip install .
+pip install .[tests]
+pip install -e .[dev]
+```
+Before making changes willing to contribute, create a different branch with a name that should be unique.
+```bash
+git switch -c my-new-feature
+```
+When you're ready to submit the pull request, please do so via the GitHub.
+
+### Testing
+To run the test suite, after installing dependencies (mind the `tests` extra) run
+```bash
+pytest
+```
