@@ -1,3 +1,9 @@
+# Home Energy Monitoring
+
+This and sensor node projects discussed in here aims to help monitoring your environment and energy consumption at home.
+
+ecodan-modbus-mqtt
+home-energy-monitoring
 
 
 ### dev containers
@@ -16,11 +22,12 @@ https://github.com/timescale/examples/tree/master/air-quality
 
 https://docs.timescale.com/timescaledb/latest/quick-start/python/
 
-### project struct
-ecodan-modbus-mqtt
-home-energy-monitoring
+### MQTT
 
-projects that aims monitor your environment and energy consumption at home.
+$SYS/broker/load/messages/received/+
+(see: mosquitto man)
+
+### project struct
 
 https://github.com/jiisaa/Mitsubishi
 

@@ -4,7 +4,7 @@ services:
     image: timescale/timescaledb:latest-pg14
     restart: "on-failure"
     ports:
-      - "15432:15432/tcp"
+      - "15432:5432/tcp"
     networks:
       - test-iot-net
     environment:
@@ -17,7 +17,7 @@ services:
     image: dpage/pgadmin4:latest
     restart: "on-failure"
     ports:
-      - "15050:15050/tcp"
+      - "15050:5050/tcp"
     networks:
       - test-iot-net
     environment:
@@ -31,7 +31,7 @@ services:
     image: grafana/grafana-oss:latest
     restart: "on-failure"
     ports:
-      - "13000:13000/tcp"
+      - "13000:3000/tcp"
     networks:
       - test-iot-net
     volumes:
@@ -41,7 +41,7 @@ services:
     image: eclipse-mosquitto:latest
     restart: on-failure
     ports:
-      - "11883:11883/tcp"
+      - "11883:1883/tcp"
     networks:
       - test-iot-net
     volumes:
