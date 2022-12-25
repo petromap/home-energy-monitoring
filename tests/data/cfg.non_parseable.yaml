@@ -1,0 +1,7 @@
+# Test non-parseable config
+
+logging_config: "
+formatters:
+    simple:
+        format: ""%(asctime)s - %(name)s - %(levelname)s - %(message)s""
+"

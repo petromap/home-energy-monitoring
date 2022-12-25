@@ -1,0 +1,33 @@
+# Logging config
+
+logging_config: |
+  version: 1
+  disable_existing_loggers: no
+  formatters:
+    simple:
+      format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    verbose:
+      format: "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: simple
+      stream: ext://sys.stdout
+    file:
+      class: logging.handlers.TimedRotatingFileHandler
+      level: DEBUG
+      formatter: verbose
+      when: D
+      backupCount: 1
+      filename: ./hemon.log
+      encoding: utf8
+    syslog:
+      class: logging.handlers.SysLogHandler
+      level: DEBUG
+      formatter: verbose
+      address: ["localhost", 514]
+  loggers:
+    root:
+      level: DEBUG
+      handlers: [console]

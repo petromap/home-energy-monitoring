@@ -16,6 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
 ]
 dependencies = [
+    "mashumaro[yaml]",
     "psycopg"
 ]
 
@@ -28,7 +29,8 @@ dev = [
 ]
 tests = [
     "pytest",
-    "pytest-cov"
+    "pytest-cov",
+    "pytest-mock"
 ]
 
 [project.urls]
@@ -40,6 +42,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 addopts = "--cov --cov-report html --cov-fail-under 95"
+pythonpath = [
+  "src"
+]
 
 [tool.coverage.run]
 source = ["src"]

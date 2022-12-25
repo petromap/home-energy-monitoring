@@ -1,0 +1,3 @@
+# test config with no values whatsoever
+
+logging_config: ""  # Python logging config in YAML string
