@@ -5,6 +5,8 @@ This and sensor node projects discussed in here aims to help monitoring your env
 ecodan-modbus-mqtt
 home-energy-monitoring
 
+https://github.com/timescale/examples/blob/master/air-quality/schema.sql
+
 
 ### dev containers
 https://github.com/garystafford/iot-analytics-at-the-edge/tree/main/docker
@@ -49,6 +51,32 @@ https://gist.github.com/graphaelli/906b624c18f77f50da5cd0cd4211c3c8
 
 *******************
 
+## Try it
+
+On live environment there must be at least TimescaleDB and MQTT broker and this application.
+And to be useful, some data collectors and reporting system as well.
+All this is modeled in docker swarm, see [Docker Instructions](docker/README.md). 
+Such swarm stack can be used to test and play with this messaging and reporting consept.
+
+### Configuring and preparing the test environment
+
+First create the database schema:
+```bash
+docker exec -it $(docker ps -q -f name=timescaledb) psql -U postgres -d test_iot -a -f /var/lib/postgresql/data/schema.sql
+```
+
+123.456
+
+TODO!!!
+conn.adapters.register_loader("numeric", psycopg.types.numeric.FloatLoader)
+sql.SQL("SELECT count(*) FROM {}").format(sql.Identifier(table))
+conn.info.encoding
+it stores a timestamp always in UTC
+https://www.psycopg.org/psycopg3/docs/basic/from_pg2.html#multiple-statements-in-the-same-query
+TODO!!!
+
+## Development
+
 ### Development Environment Creation
 
 Fork the repository and clone your fork to you computer.
@@ -77,3 +105,7 @@ To run the test suite, after installing dependencies (mind the `tests` extra) ru
 ```bash
 pytest
 ```
+
+### Integration testing
+
+TODO!!

@@ -25,6 +25,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: user@domain.com
       PGADMIN_DEFAULT_PASSWORD: SuperSecret
       PGADMIN_DISABLE_POSTFIX: 1
+      PGADMIN_SERVER_JSON_FILE: /var/lib/pgadmin/servers.json
     volumes:
       - ${HOME}/test-iot-net/data/pgadmin:/var/lib/pgadmin
   grafana:
