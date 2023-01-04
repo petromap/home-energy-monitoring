@@ -1,6 +1,6 @@
 CREATE TABLE measurement_types (
   parameter_id SMALLSERIAL PRIMARY KEY,
-  parameter TEXT NOT NULL,
+  parameter_name TEXT NOT NULL,
   unit TEXT NOT NULL,
   UNIQUE(parameter, unit)
 );
