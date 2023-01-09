@@ -17,7 +17,7 @@ classifiers = [
 ]
 dependencies = [
     "mashumaro[yaml]",
-    "psycopg"
+    "psycopg[binary]"
 ]
 
 [project.optional-dependencies]
@@ -28,6 +28,7 @@ dev = [
     "mypy"
 ]
 tests = [
+    "pgcopy",
     "pytest",
     "pytest-cov",
     "pytest-mock"
@@ -41,9 +42,13 @@ requires = ["setuptools >= 62"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-addopts = "--cov --cov-report html --cov-fail-under 95"
+addopts = "--cov --cov-report html --cov-fail-under 95 -m 'not integration and not load_data'"
 pythonpath = [
   "src"
+]
+markers = [
+  "integration: marks tests to be run against docker stack",
+  "load_data: load sample data into database",
 ]
 
 [tool.coverage.run]

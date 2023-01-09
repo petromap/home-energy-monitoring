@@ -65,15 +65,25 @@ First create the database schema:
 docker exec -it $(docker ps -q -f name=timescaledb) psql -U postgres -d test_iot -a -f /var/lib/postgresql/data/schema.sql
 ```
 
-123.456
+Then import sample data:
+```bash
+docker exec -it $(docker ps -q -f name=timescaledb) psql -U postgres -d test_iot -a -f /var/lib/postgresql/data/sample_data.sql
+```
 
-TODO!!!
-conn.adapters.register_loader("numeric", psycopg.types.numeric.FloatLoader)
-sql.SQL("SELECT count(*) FROM {}").format(sql.Identifier(table))
-conn.info.encoding
-it stores a timestamp always in UTC
-https://www.psycopg.org/psycopg3/docs/basic/from_pg2.html#multiple-statements-in-the-same-query
-TODO!!!
+Now, one should be able login into grafana and see some data in there or 
+browse it with pgadmin.
+
+To get more samples to play with, there is pytest module for loading data for 
+previous week.
+This step is not needed unlike previous ones to run integration tests or to 
+see stack in live.
+
+Loading 7*24h sample data run following command:
+* Warning: removes old data from named sensor
+* If docker stack is modified, change the code respectively
+```bash
+pytest -m load_data
+```
 
 ## Development
 
@@ -109,3 +119,7 @@ pytest
 ### Integration testing
 
 TODO!!
+
+Note:
+* Removes old data from named sensor(s)
+* If docker stack is modified, change the code respectively
