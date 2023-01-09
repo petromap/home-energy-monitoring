@@ -37,6 +37,8 @@ services:
       - test-iot-net
     volumes:
       - ${HOME}/test-iot-net/data/grafana:/var/lib/grafana
+      - ${HOME}/test-iot-net/data/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ${HOME}/test-iot-net/data/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
     user: grafana
   mosquitto:
     image: eclipse-mosquitto:latest
