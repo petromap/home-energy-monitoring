@@ -1,0 +1,15 @@
+# No parameters example
+
+logging_config: ""
+mqtt:
+  topic_prefix: "hemon/sensor"
+db:
+  dbname:
+  host: "localhost"
+  port: 5432
+  username:
+  password:
+sensor_locations:
+  - node_name: "kitchen"
+    location_name: "in the house"
+parameters: []

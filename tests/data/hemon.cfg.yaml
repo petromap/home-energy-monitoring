@@ -1,3 +1,13 @@
 # test config with no values whatsoever
 
-logging_config: ""  # Python logging config in YAML string
+logging_config: ""    # Python logging config in YAML string
+mqtt:
+  topic_prefix: ""    # MQTT topic to subscribe, all topics from this one
+db:
+  dbname:             # PostgreSQL database where to store data
+  host: "localhost"
+  port: 5432
+  username:
+  password:
+sensor_locations: []  # List of known sensor nodes | locations, insert into db ones doesn't exist
+parameters: []        # List of known parameters, insert into db ones doesn't exist

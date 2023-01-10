@@ -1,0 +1,21 @@
+# Parameters example
+
+logging_config: ""
+mqtt:
+  topic_prefix: "hemon/sensor"
+db:
+  dbname: "tsdb"
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "postgres1234"
+sensor_locations:
+  - node_name: "kitchen"
+    location_name: "in the house"
+parameters:
+  - name: "E consumption"
+    unit: "kWh"
+    key: "Ec"
+  - name: "Temperature"
+    unit: "°C"
+    key: "T"

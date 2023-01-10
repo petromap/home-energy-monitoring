@@ -1,0 +1,13 @@
+# No sensors example
+
+logging_config: ""
+mqtt:
+  topic_prefix: "hemon/sensor"
+db:
+  dbname:
+  host: "localhost"
+  port: 5432
+  username:
+  password:
+sensor_locations: []
+parameters: []

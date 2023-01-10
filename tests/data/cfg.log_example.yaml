@@ -31,3 +31,13 @@ logging_config: |
     root:
       level: DEBUG
       handlers: [console]
+mqtt:
+  topic_prefix: ""
+db:
+  dbname:
+  host: "localhost"
+  port: 5432
+  username:
+  password:
+sensor_locations: []
+parameters: []

@@ -5,3 +5,13 @@ formatters:
     simple:
         format: ""%(asctime)s - %(name)s - %(levelname)s - %(message)s""
 "
+mqtt:
+  topic_prefix: ""
+db:
+  dbname:
+  host: "localhost"
+  port: 5432
+  username:
+  password:
+sensor_locations: []
+parameters: []
