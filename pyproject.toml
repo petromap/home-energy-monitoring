@@ -32,7 +32,8 @@ tests = [
     "pgcopy",
     "pytest",
     "pytest-cov",
-    "pytest-mock"
+    "pytest-mock",
+    "psycopg2"
 ]
 
 [project.urls]
