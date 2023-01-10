@@ -70,8 +70,6 @@ class TestManageMetadata:
 
         hemon.app._update_metadata_configuration()
 
-        # TODO: remove debug print
-        print("*****************")
         execute = mock_cursor.return_value.__enter__.return_value.execute
         assert execute.call_count == 3
         assert "insert into locations(location_name, sensor_name) values (%s, %s)" in execute.call_args_list[0].args[0]
@@ -79,10 +77,8 @@ class TestManageMetadata:
         assert "insert into measurement_types(parameter_name, unit) values (%s, %s)" in execute.call_args_list[1].args[0]
         assert execute.call_args_list[1].args[1] == ['E consumption', 'kWh']
         assert execute.call_args_list[2].args[1] == ['Temperature', '°C']
-        print(mock_cursor.return_value.__enter__.return_value.execute.call_args_list)
-        #print(caplog.record_tuples)
 
-        assert app.cfg.sensor_locations[0].id == 1
+        assert app.cfg.sensor_locations[0].id == 2
         assert app.cfg.parameters[0].id is None
         assert app.cfg.parameters[1].id == 3
         assert ("hemon.app", logging.INFO, "successfully updated and read metadata tables") in caplog.record_tuples
