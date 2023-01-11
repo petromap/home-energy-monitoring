@@ -67,7 +67,7 @@ def _handle_message(msg: MQTTMessage) -> MessageResult:
     # some validations..
     # ... there should be time when values are measured
     _log.debug(doc)
-    if "time" not in doc.keys():
+    if "time" not in doc.keys() or doc["time"] <= 0:
         return MessageResult.INVALID_PAYLOAD
     # ... sensor must be known
     if not bool([sl for sl in app.cfg.sensor_locations if (doc["node"] == sl.node_name)]):
