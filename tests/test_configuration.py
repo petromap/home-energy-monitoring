@@ -7,7 +7,7 @@ from unittest import mock
 
 import hemon.app
 from hemon import config as app
-from hemon.config import SensorParameter, load_configuration
+from hemon.config import load_configuration
 
 
 fixture_data_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent / "tests" / "data"

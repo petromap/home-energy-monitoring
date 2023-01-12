@@ -3,6 +3,10 @@
 logging_config: ""
 mqtt:
   topic_prefix: "hemon/sensor"
+  host: "localhost"
+  port: 1883
+  username:
+  password:
 db:
   dbname: "tsdb"
   host: "localhost"

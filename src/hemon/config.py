@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
-import pathlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from io import IOBase
 from typing import List, Optional
 
 from mashumaro.mixins.yaml import DataClassYAMLMixin
-from yaml.error import YAMLError
 
 _log = logging.getLogger(__name__)
 
@@ -20,7 +18,7 @@ class SensorParameter(DataClassYAMLMixin):
 
     name: str
     unit: str
-    key: str    # key in MQTT message
+    key: str  # key in MQTT message
     id: Optional[int] = None
 
 
@@ -38,6 +36,10 @@ class MQTT(DataClassYAMLMixin):
     """Configuration for connecting to MQTT broker, topic settings etc."""
 
     topic_prefix: str  # subscribe all topics from this one
+    host: str
+    port: int
+    username: str
+    password: str
 
 
 @dataclass
@@ -75,7 +77,7 @@ def load_configuration(io_stream: IOBase) -> None:
     global cfg  # pylint: disable=C0103
     try:
         cfg = Configuration.from_yaml(io_stream.read())
-    except Exception as e: # noqa
+    except Exception as e:  # noqa
         _log.exception("Failed to parse configuration. %s", repr(e))
     finally:
         io_stream.close()

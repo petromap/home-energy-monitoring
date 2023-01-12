@@ -7,6 +7,10 @@ formatters:
 "
 mqtt:
   topic_prefix: ""
+  host: "localhost"
+  port: 1883
+  username:
+  password:
 db:
   dbname:
   host: "localhost"
