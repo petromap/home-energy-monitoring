@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 /docker/stack.yml
 /notes.md
+/stubs/
