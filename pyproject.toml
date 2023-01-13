@@ -52,6 +52,8 @@ markers = [
   "integration: marks tests to be run against docker stack",
   "load_data: load sample data into database",
 ]
+#log_cli = true
+#log_cli_level = "DEBUG"
 
 [tool.coverage.run]
 source = ["src"]

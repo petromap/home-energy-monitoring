@@ -4,6 +4,8 @@ import json
 import logging
 import logging.config
 import os
+import time
+
 import yaml
 from enum import IntEnum
 from paho.mqtt.client import MQTTMessage
@@ -46,11 +48,17 @@ def main():
 
     # TODO: remove debug print
     print(app.cfg)
+    print(f"..app running at {time.strftime('%X')}")
 
     _setup_logging(app.cfg.logging_config)
     _log.info("successfully read configuration from: %s", args.config.name)
 
     _update_metadata_configuration()
+
+    # TODO: new mwtt client with reconnect_on_failure=True
+
+    time.sleep(5)
+
 
 #TODO: logging of incoming message
 
@@ -58,7 +66,7 @@ def _handle_message(msg: MQTTMessage) -> MessageResult:
     if not msg.topic.startswith(app.cfg.mqtt.topic_prefix):
         return MessageResult.NOT_OWN_TOPIC
     try:
-        _log.debug(str(msg.payload))
+        _log.debug("Message received [%s]: %s", msg.topic, str(msg.payload))
         doc = json.loads(msg.payload)
     except ValueError as e:
         _log.warning("message %s dropped due to invalid payload, cause: %s", str(msg.mid), repr(e))
@@ -66,7 +74,6 @@ def _handle_message(msg: MQTTMessage) -> MessageResult:
 
     # some validations..
     # ... there should be time when values are measured
-    _log.debug(doc)
     if "time" not in doc.keys() or doc["time"] <= 0:
         return MessageResult.INVALID_PAYLOAD
     # ... sensor must be known
