@@ -12,6 +12,7 @@ mkdir -p $STACK_HOME/test-iot-net/data/mosquitto/data
 mkdir -p $STACK_HOME/test-iot-net/data/mosquitto/logs
 
 cp docker/mosquitto.conf $STACK_HOME/test-iot-net/data/mosquitto/config/mosquitto.conf
+cp docker/mosquitto.pwfile $STACK_HOME/test-iot-net/data/mosquitto/config/pwfile
 cp docker/pgadmin4.servers.json $STACK_HOME/test-iot-net/data/pgadmin/servers.json
 cp docker/grafana-datasource.yml $STACK_HOME/test-iot-net/data/grafana/provisioning/datasources/datasource.yml
 cp docker/grafana-dashboard.yml $STACK_HOME/test-iot-net/data/grafana/provisioning/dashboards/dashboard.yml
