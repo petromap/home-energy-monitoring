@@ -127,6 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
 /docker/stack.yml
 /notes.md
 /stubs/
+/hemon.cfg.yaml
