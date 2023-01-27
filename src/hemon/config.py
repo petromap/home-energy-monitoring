@@ -58,6 +58,7 @@ class Configuration(DataClassYAMLMixin):
     """Configuration for this application, persisted as YAML."""
 
     logging_config: str  # ok, being lazy in here and using just single magic string
+    loop_time: int
     mqtt: MQTT
     db: Database
     sensor_locations: List[SensorNode]

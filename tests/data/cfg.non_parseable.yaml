@@ -5,6 +5,7 @@ formatters:
     simple:
         format: ""%(asctime)s - %(name)s - %(levelname)s - %(message)s""
 "
+loop_time: 0
 mqtt:
   topic_prefix: ""
   host: "localhost"

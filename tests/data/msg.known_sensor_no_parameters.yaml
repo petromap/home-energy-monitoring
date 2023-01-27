@@ -1,6 +1,7 @@
 # No parameters example
 
 logging_config: ""
+loop_time: 0
 mqtt:
   topic_prefix: "hemon/sensor"
   host: "localhost"

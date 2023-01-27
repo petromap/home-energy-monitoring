@@ -1,17 +1,18 @@
 # test config with no values whatsoever
 
 logging_config: ""    # Python logging config in YAML string
+loop_time: 1          # How long you want processing MQTT messages: -1 infinite, 0 process in/out traffic once, 1+ run for N seconds
 mqtt:
-  topic_prefix: ""    # MQTT topic to subscribe, all topics from this one
+  topic_prefix: "cfg" # MQTT topic to subscribe, all topics from this one
   host: "localhost"
   port: 1883
-  username:
-  password:
+  username: "mqtt_user"
+  password: "mqtt_pswd"
 db:
-  dbname:             # PostgreSQL database where to store data
+  dbname: "tsdb"      # PostgreSQL database where to store data
   host: "localhost"
   port: 5432
-  username:
-  password:
+  username: "pg_user"
+  password: "pg_password"
 sensor_locations: []  # List of known sensor nodes | locations, insert into db ones doesn't exist
 parameters: []        # List of known parameters, insert into db ones doesn't exist

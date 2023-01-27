@@ -31,6 +31,7 @@ logging_config: |
     root:
       level: DEBUG
       handlers: [console]
+loop_time: 0
 mqtt:
   topic_prefix: ""
   host: "localhost"

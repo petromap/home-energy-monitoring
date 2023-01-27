@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-import pytest
 from pathlib import Path
 from unittest import mock
+
+import pytest
 
 import hemon.app
 from hemon import config as app
 from hemon.config import load_configuration
-
 
 fixture_data_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent / "tests" / "data"
 
@@ -40,6 +40,17 @@ class TestProgramArguments:
         assert ("root", logging.INFO, "log level set to: INFO") in caplog.record_tuples
         assert bool([rec.message for rec in caplog.records if ("hemon.cfg.yaml" in rec.message)])
         assert bool([rec.message for rec in caplog.records if ("successfully read configuration" in rec.message)])
+
+        assert app.cfg.loop_time == 1
+        assert app.cfg.mqtt.topic_prefix == "cfg"
+        assert app.cfg.mqtt.host == "localhost"
+        assert app.cfg.mqtt.port == 1883
+        assert app.cfg.mqtt.username == "mqtt_user"
+        assert app.cfg.mqtt.password == "mqtt_pswd"
+        assert app.cfg.db.host == "localhost"
+        assert app.cfg.db.port == 5432
+        assert app.cfg.db.username == "pg_user"
+        assert app.cfg.db.password == "pg_password"
 
 
 class TestConfiguration:
