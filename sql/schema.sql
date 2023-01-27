@@ -2,7 +2,7 @@ CREATE TABLE measurement_types (
   parameter_id SMALLSERIAL PRIMARY KEY,
   parameter_name TEXT NOT NULL,
   unit TEXT NOT NULL,
-  UNIQUE(parameter, unit)
+  UNIQUE(parameter_name, unit)
 );
 
 CREATE TABLE locations (
