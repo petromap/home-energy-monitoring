@@ -1,0 +1,19 @@
+[Unit]
+Description=Home Energy Monitoring - Mosquitto to TimescaleDB Script
+After=network.target
+Wants=mosquitto.service
+
+[Service]
+Type=simple
+ExecStart=/home/hemon/mqtt2tsdb/venv/bin/python3.10 -u -m hemon \
+    --config /home/hemon/mqtt2tsdb/hemon.cfg.yaml
+WorkingDirectory=/home/hemon/mqtt2tsdb
+Environment=PATH=/home/hemon/mqtt2tsdb/venv/bin:$PATH
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+RestartSec=60
+User=hemon
+
+[Install]
+WantedBy=multi-user.target

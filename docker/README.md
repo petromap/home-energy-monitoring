@@ -1,5 +1,7 @@
 # Docker Instructions
 
+If not done already, clone this repository or download the source code.
+
 Copy *stack.example.yml* to *stack.yml* and replace each ${HOME} by absolute 
 path to users home directory. If willing to use other root path mind to change 
 it in *setup-stack-services.sh* script respectively.
