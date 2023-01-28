@@ -5,7 +5,7 @@ Wants=mosquitto.service
 
 [Service]
 Type=simple
-ExecStart=/home/hemon/mqtt2tsdb/venv/bin/python3.10 -u -m hemon \
+ExecStart=/home/hemon/mqtt2tsdb/venv/bin/python3.10 -u -m hemon.app \
     --config /home/hemon/mqtt2tsdb/hemon.cfg.yaml
 WorkingDirectory=/home/hemon/mqtt2tsdb
 Environment=PATH=/home/hemon/mqtt2tsdb/venv/bin:$PATH
