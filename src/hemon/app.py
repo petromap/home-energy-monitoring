@@ -5,10 +5,11 @@ import logging
 import logging.config
 import os
 import time
+import typing
 
 import yaml
 from enum import IntEnum
-from paho.mqtt.client import MQTTMessage
+from paho.mqtt import client as mqtt
 from pathlib import Path
 
 from hemon import db
@@ -55,29 +56,47 @@ def main():
 
     _update_metadata_configuration()
 
-    # TODO: new mwtt client with reconnect_on_failure=True
+    mqtt_client = mqtt.Client(reconnect_on_failure=True)
+    mqtt_client.username_pw_set(app.cfg.mqtt.username, app.cfg.mqtt.password)
+    mqtt_client.on_log = _on_mqtt_log
+    mqtt_client.on_connect = _on_mqtt_connect
+    mqtt_client.on_message = _handle_message
+    mqtt_client.connect(host=app.cfg.mqtt.host, port=app.cfg.mqtt.port, keepalive=180)
 
-    time.sleep(5)
+    # TODO: conditionally time to run or loop_forever, or just loop once
+    mqtt_client.loop_start()
+    time.sleep(app.cfg.loop_time)
+    mqtt_client.loop_stop()
+    mqtt_client.disconnect()
 
 
-#TODO: logging of incoming message
+def _on_mqtt_connect(client: mqtt.Client, userdata: typing.Any, flags: typing.Dict, rc: int):
+    _log.info("connected with result code " + str(rc))
+    #r = client.subscribe(app.cfg.mqtt.topic_prefix + "/#")
+    r = client.subscribe("#")
+    print(f"..app connected at {time.strftime('%X')}")
 
-def _handle_message(msg: MQTTMessage) -> MessageResult:
+def _on_mqtt_log(client: mqtt.Client, userdata: typing.Any, level, buf):
+    _log.log(level, buf)
+
+def _handle_message(client: mqtt.Client, userdata: typing.Any, msg: mqtt.MQTTMessage) -> MessageResult:
     if not msg.topic.startswith(app.cfg.mqtt.topic_prefix):
         return MessageResult.NOT_OWN_TOPIC
     try:
-        _log.debug("Message received [%s]: %s", msg.topic, str(msg.payload))
+        _log.debug("Message %s received [%s]: %s", str(msg.mid), msg.topic, str(msg.payload))
         doc = json.loads(msg.payload)
     except ValueError as e:
-        _log.warning("message %s dropped due to invalid payload, cause: %s", str(msg.mid), repr(e))
+        _log.warning("message %s dropped, invalid payload - cause: %s", str(msg.mid), repr(e))
         return MessageResult.INVALID_PAYLOAD
 
     # some validations..
     # ... there should be time when values are measured
     if "time" not in doc.keys() or doc["time"] <= 0:
+        _log.debug("message %s dropped, missing measure time", str(msg.mid))
         return MessageResult.INVALID_PAYLOAD
     # ... sensor must be known
     if not bool([sl for sl in app.cfg.sensor_locations if (doc["node"] == sl.node_name)]):
+        _log.debug("message %s dropped, unknown node \"%s\"", str(msg.mid), doc["node"])
         return MessageResult.NO_SUCH_NODE
 
     # iterate through values and accept those with known parameter
@@ -86,6 +105,7 @@ def _handle_message(msg: MQTTMessage) -> MessageResult:
         if bool([p for p in app.cfg.parameters if (m == p.key)]):
             values.append((m, doc["values"][m]))
     if len(values) == 0:
+        _log.debug("message %s dropped, no accepted values", msg.mid)
         return MessageResult.NO_VALUES
 
     # accepted message with some known values...

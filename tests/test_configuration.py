@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from unittest import mock
 
+import paho.mqtt.client
 import pytest
 
 import hemon.app
@@ -18,14 +19,15 @@ def change_test_dir(monkeypatch):
     monkeypatch.chdir(fixture_data_dir)
 
 
+@mock.patch.object(paho.mqtt.client.Client, "connect")
 class TestProgramArguments:
-    def test_no_arguments_no_config(self, monkeypatch):
+    def test_no_arguments_no_config(self, mqtt_conn, monkeypatch):
         monkeypatch.setattr("sys.argv", ["prog"])
         with pytest.raises(ValueError) as e:
             hemon.app.main()
         assert "Missing configuration" in str(e.value)
 
-    def test_empty_config(self, change_test_dir, caplog, monkeypatch):
+    def test_empty_config(self, mqtt_conn, change_test_dir, caplog, monkeypatch):
         monkeypatch.setattr("sys.argv", ["prog"])
         hemon.app.main()
 
@@ -33,7 +35,7 @@ class TestProgramArguments:
         res = [rec.message for rec in caplog.records if ("successfully read configuration" in rec.message)]
         assert bool(res)
 
-    def test_named_config_file(self, caplog, monkeypatch):
+    def test_named_config_file(self, mqtt_conn, caplog, monkeypatch):
         monkeypatch.setattr("sys.argv", ["prog", "--config", str(fixture_data_dir / "hemon.cfg.yaml")])
         hemon.app.main()
 
@@ -53,17 +55,16 @@ class TestProgramArguments:
         assert app.cfg.db.password == "pg_password"
 
 
+@mock.patch.object(paho.mqtt.client.Client, "connect")
 class TestConfiguration:
 
-    def test_non_parseable_config(self, caplog, monkeypatch):
+    def test_non_parseable_config(self, mqtt_conn, caplog, monkeypatch):
         monkeypatch.setattr("sys.argv", ["prog", "--config", str(fixture_data_dir / "cfg.non_parseable.yaml")])
         hemon.app.main()
 
         assert bool([rec.message for rec in caplog.records if ("Failed to parse configuration" in rec.message)])
         assert bool([rec.message for rec in caplog.records if ("did not find expected key" in rec.message)])
 
-
-# TODO: mqtt parameters, unit test via mocked broker
 
 class TestManageMetadata:
 

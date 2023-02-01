@@ -33,7 +33,7 @@ class TestReceiveData:
         client.on_connect = TestReceiveData.on_connect
         client.on_message = TestReceiveData.on_message
 
-        client.connect(app.cfg.mqtt.host, app.cfg.mqtt.port, 180)
+        client.connect(host=app.cfg.mqtt.host, port=app.cfg.mqtt.port, keepalive=180)
         return client
 
     @staticmethod
@@ -42,41 +42,51 @@ class TestReceiveData:
 
     @staticmethod
     def on_connect(client, userdata, flags, rc):
-        _log.info("Connected with result code " + str(rc))
+        _log.info("connected with result code " + str(rc))
 
     @staticmethod
     def on_message(client, userdata, msg):
         _log.info(msg.topic + " " + str(msg.payload))
 
-    #@staticmethod
-    #async def run_the_app():
-    #    await hemon.app.main()
-
     def test_receive_rejected_all_values(self, mqtt_client, caplog):
-
-        #TODO: assert runtime
 
         mqtt_client.loop_start()
 
-        print()
-        print(f"started at {time.strftime('%X')}")
-        #asyncio.run(TestReceiveData.run_the_app())
-        #asyncio.run(hemon.app.main())
-        #await hemon.app.main()
-        thread = threading.Thread(target=hemon.app.main)
-        thread.start()
-        print(f"..app started at {time.strftime('%X')}")
+        TestReceiveData.wait_for_conn_ack(mqtt_client)
 
-        # TODO: publish
+        # TODO: remove debug print
+        print()
+
+        #thread = threading.Thread(target=hemon.app.main)
+        #thread.start()
+
+        # TODO: proper publish
+        #mqtt_client.publish(topic=app.cfg.mqtt.topic_prefix + "/kitchen", payload=b"Foo!")
+        mqtt_client.publish(topic=app.cfg.mqtt.topic_prefix, retain=True, payload="Foo-2S!")
+        print(f"published at {time.strftime('%X')}")
+
         # TODO: wait a second or two
         time.sleep(2)
-        print(f"finished at {time.strftime('%X')}")
 
         mqtt_client.loop_stop()
         mqtt_client.disconnect()
 
-        # join after configured lifetime
-        thread.join(timeout=1)
+        # then the actual app kicks in
+        print(f"..app starting at {time.strftime('%X')}")
+        hemon.app.main()
+
+        print(f"finished at {time.strftime('%X')}")
 
         # then, some validations what just happened
-        assert ("root", logging.INFO, "successfully read configuration") in caplog.record_tuples
+        assert ("test_integration", logging.INFO, "connected with result code 0") in caplog.record_tuples
+        assert ("hemon.app", logging.DEBUG, "message 1 dropped, no accepted values") in caplog.record_tuples
+
+    @staticmethod
+    def wait_for_conn_ack(mqtt_client):
+        # wait for conn ack
+        must_end = time.time() + 5
+        while time.time() < must_end:
+            if mqtt_client.is_connected():
+                break
+            time.sleep(.1)
+        assert mqtt_client.is_connected()
