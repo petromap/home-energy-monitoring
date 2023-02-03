@@ -20,6 +20,7 @@ _log = logging.getLogger(__name__)
 
 class MessageResult(IntEnum):
     """Result of handling  MQTT message."""
+    READ_ERROR = -5
     NO_VALUES = -4
     NO_SUCH_NODE = -3
     INVALID_PAYLOAD = -2
@@ -94,6 +95,10 @@ def _handle_message(client: mqtt.Client, userdata: typing.Any, msg: mqtt.MQTTMes
     if "time" not in doc.keys() or doc["time"] <= 0:
         _log.debug("message %s dropped, missing measure time", str(msg.mid))
         return MessageResult.INVALID_PAYLOAD
+    # ... if there is read (error) status, drop messages with any error code
+    if "read_status" in doc.keys() and doc["read_status"] != 0:
+        _log.debug("message %s dropped, read error status = %s", str(msg.mid), str(doc["read_status"]))
+        return MessageResult.READ_ERROR
     # ... sensor must be known
     if not bool([sl for sl in app.cfg.sensor_locations if (doc["node"] == sl.node_name)]):
         _log.debug("message %s dropped, unknown node \"%s\"", str(msg.mid), doc["node"])

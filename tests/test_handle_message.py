@@ -73,6 +73,14 @@ class TestMessageApproval:
         msg.payload = TestMessageApproval.to_bytes(json.dumps(payload))
         assert _handle_message(None, None, msg) == MessageResult.NO_VALUES
 
+    def test_read_error(self, monkeypatch):
+        load_configuration(open(str(fixture_data_dir / "msg.known_sensor_with_parameters.yaml")))  # noqa
+
+        msg = MQTTMessage(1, TestMessageApproval.to_bytes(app.cfg.mqtt.topic_prefix))
+        payload = {"node": "kitchen", "time": 1672953813, "values": {"T": 0, "RH": 0}, "read_time": 1037, "read_status": 1}
+        msg.payload = TestMessageApproval.to_bytes(json.dumps(payload))
+        assert _handle_message(None, None, msg) == MessageResult.READ_ERROR
+
     @mock.patch('hemon.db.Cursor')
     def test_handle_insert_values(self, mock_cursor, monkeypatch, caplog):
         load_configuration(open(str(fixture_data_dir / "msg.known_sensor_with_parameters.yaml")))  # noqa
