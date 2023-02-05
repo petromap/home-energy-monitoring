@@ -6,14 +6,15 @@ import logging.config
 import os
 import time
 import typing
-
-import yaml
+from datetime import datetime, timezone
 from enum import IntEnum
-from paho.mqtt import client as mqtt
 from pathlib import Path
 
-from hemon import db
+import yaml
+from paho.mqtt import client as mqtt
+
 from hemon import config as app
+from hemon import db
 
 _log = logging.getLogger(__name__)
 
@@ -118,7 +119,7 @@ def _handle_message(client: mqtt.Client, userdata: typing.Any, msg: mqtt.MQTTMes
     sensor = [sl for sl in app.cfg.sensor_locations if (doc["node"] == sl.node_name)][0]
     for v in values:
         parameter = [p for p in app.cfg.parameters if (v[0] == p.key)][0]
-        measurements.append((doc["time"], sensor.id, parameter.id, v[1]))
+        measurements.append((datetime.fromtimestamp(doc["time"], tz=timezone.utc), sensor.id, parameter.id, v[1]))
     db.insert_measurements(measurements)
     return MessageResult.SUCCESS
 

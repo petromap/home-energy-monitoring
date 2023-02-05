@@ -2,6 +2,7 @@
 import logging
 import types
 import typing
+from datetime import datetime
 
 import psycopg
 from psycopg.rows import dict_row
@@ -71,7 +72,7 @@ def insert_parameters(values: typing.List[SensorParameter]) -> None:
             cursor.execute(sql, [v.name, v.unit])
 
 
-def insert_measurements(values: typing.List[typing.Tuple[float, int, int, float]]) -> None:
+def insert_measurements(values: typing.List[typing.Tuple[datetime, int, int, float]]) -> None:
     with Cursor() as cursor:
         sql = "insert into measurements(measure_time, location_id, parameter_id, v) values (%s, %s, %s, %s)"
         for v in values:
