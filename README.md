@@ -8,6 +8,14 @@ home-energy-monitoring
 https://github.com/timescale/examples/blob/master/air-quality/schema.sql
 
 
+EHST20D-YM9DR1.UK  
+PUD-SWM80YAA.UK
+
+TODO: describe what are the components of full stack
+TODO: explain mqtt2tsdb program
+TODO: message structure into MQTT paragraph
+
+
 ### dev containers
 https://github.com/garystafford/iot-analytics-at-the-edge/tree/main/docker
  * https://docs.timescale.com/install/latest/installation-docker/
@@ -56,8 +64,8 @@ https://gist.github.com/graphaelli/906b624c18f77f50da5cd0cd4211c3c8
 Installing the package requires couple easy steps:
  * [Create virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-and-using-virtual-environments) 
 for the software.
- * Install the package into this virtual environment:
-   * ```venv/bin/python3.10 -m pip install "git+https://github.com/petromap/home-energy-monitoring.git"```
+ * Download release and install the package into this virtual environment:
+   * ```venv/bin/python3.10 -m pip install home_energy_monitoring-*.whl```
  * Create a YAML configuration file, see [example](hemon.cfg.example.yaml)
    * When running the program refer to that configuration file with program argument ```--config <config file>```
 

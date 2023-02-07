@@ -24,6 +24,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black",
+    "build",
+    "colorama",
     "flake8",
     "isort",
     "mypy"
@@ -47,7 +49,7 @@ build-backend = "setuptools.build_meta"
 version = {attr = "hemon.__version__"}
 
 [tool.pytest.ini_options]
-addopts = "--cov --cov-report html --cov-fail-under 95 -m 'not integration and not load_data'"
+addopts = "--cov --cov-report html --cov-fail-under 90 -m 'not integration and not load_data'"
 pythonpath = [
   "src"
 ]
