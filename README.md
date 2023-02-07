@@ -119,6 +119,14 @@ pytest
 ### Integration testing
 
 TODO!!
+https://github.com/1technophile/OpenMQTTGateway/blob/development/main/main.ino
+
+
+Let predefined users to publish and subscribe MQTT messages (multiple calls will render the password file unusable):
+```bash
+docker exec -it $(docker ps -q -f name=mosquitto) mosquitto_passwd -U /mosquitto/config/pwfile
+```
+
 
 Note:
 * Removes old data from named sensor(s)

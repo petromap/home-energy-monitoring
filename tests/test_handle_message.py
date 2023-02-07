@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
+import datetime
 import json
-import logging
 import os
-import pytest
 
 from paho.mqtt.client import MQTTMessage
 from pathlib import Path
@@ -94,5 +93,5 @@ class TestMessageApproval:
         assert _handle_message(None, None, msg) == MessageResult.SUCCESS
         mock_cursor.return_value.__enter__.return_value.execute.assert_called_with(
             "insert into measurements(measure_time, location_id, parameter_id, v) values (%s, %s, %s, %s)",
-            [1672953813, 3, 5, 20.57]
+            [datetime.datetime(2023, 1, 5, 21, 23, 33, tzinfo=datetime.timezone.utc), 3, 5, 20.57]
         )
