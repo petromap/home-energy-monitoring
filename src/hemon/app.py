@@ -33,7 +33,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=argparse.FileType("r"))
     args = parser.parse_args()
-    print(args)
 
     if not args.config:
         path = Path(os.getcwd()) / "hemon.cfg.yaml"
@@ -41,20 +40,13 @@ def main():
             raise ValueError("Missing configuration")
         args.config = open(str(path), "r", encoding="utf-8")  # pylint: disable=R1732
 
-    # TODO: remove debug print
-    print("")
-    print(args)
-
     app.load_configuration(args.config)
     if not hasattr(app, "cfg"):
         return
 
-    # TODO: remove debug print
-    print(app.cfg)
-    print(f"..app running at {time.strftime('%X')}")
-
     _setup_logging(app.cfg.logging_config)
     _log.info("successfully read configuration from: %s", args.config.name)
+    _log.debug(app.cfg)
 
     _update_metadata_configuration()
 
@@ -65,21 +57,27 @@ def main():
     mqtt_client.on_message = _handle_message
     mqtt_client.connect(host=app.cfg.mqtt.host, port=app.cfg.mqtt.port, keepalive=180)
 
-    # TODO: conditionally time to run or loop_forever, or just loop once
-    mqtt_client.loop_start()
-    time.sleep(app.cfg.loop_time)
-    mqtt_client.loop_stop()
-    mqtt_client.disconnect()
+    try:
+        if app.cfg.loop_time < 0:
+            mqtt_client.loop_forever()
+        elif app.cfg.loop_time == 0:
+            mqtt_client.loop()
+        else:
+            mqtt_client.loop_start()
+            time.sleep(app.cfg.loop_time)
+            mqtt_client.loop_stop()
+    finally:
+        mqtt_client.disconnect()
 
 
 def _on_mqtt_connect(client: mqtt.Client, userdata: typing.Any, flags: typing.Dict, rc: int):
     _log.info("connected with result code " + str(rc))
-    #r = client.subscribe(app.cfg.mqtt.topic_prefix + "/#")
-    r = client.subscribe("#")
-    print(f"..app connected at {time.strftime('%X')}")
+    client.subscribe(app.cfg.mqtt.topic_prefix + "/#")
+
 
 def _on_mqtt_log(client: mqtt.Client, userdata: typing.Any, level, buf):
     _log.log(level, buf)
+
 
 def _handle_message(client: mqtt.Client, userdata: typing.Any, msg: mqtt.MQTTMessage) -> MessageResult:
     if not msg.topic.startswith(app.cfg.mqtt.topic_prefix):
@@ -157,9 +155,6 @@ def _update_metadata_configuration():
         for dbp in params:
             if dbp["parameter_name"] == p.name:
                 p.id = dbp["parameter_id"]
-    #_log.info(params)
-    print("##########")
-    print(params)
 
     _log.info("successfully updated and read metadata tables")
 

@@ -32,6 +32,8 @@ logging_config: |
     root:
       level: DEBUG
       handlers: [file]
+# loop time - how long you want processing MQTT messages: -1 infinite, 0 process in/out traffic once, 1+ run for N seconds
+loop_time: 0
 mqtt:
   # MQTT topic to subscribe, all topics from this one
   topic_prefix: "hemon/sensor"
