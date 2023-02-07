@@ -51,6 +51,28 @@ https://gist.github.com/graphaelli/906b624c18f77f50da5cd0cd4211c3c8
 
 *******************
 
+## Installing the MQTT to TimescaleDB package
+
+Installing the package requires couple easy steps:
+ * [Create virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-and-using-virtual-environments) 
+for the software.
+ * Install the package into this virtual environment:
+   * ```venv/bin/python3.10 -m pip install "git+https://github.com/petromap/home-energy-monitoring.git"```
+ * Create a YAML configuration file, see [example](hemon.cfg.example.yaml)
+   * When running the program refer to that configuration file with program argument ```--config <config file>```
+
+To test configuration and whether MQTT broker and database can be reached, 
+run:
+```bash
+venv/bin/python3.10 -m hemon.app --config <config file>
+```
+
+### Running as service
+
+Unless just testing the package one may want to create a service for it.
+For brief instructions how to do it using systemd, 
+see [making systemd service](systemctl/README.md).
+
 ## Try it
 
 On live environment there must be at least TimescaleDB and MQTT broker and this application.
