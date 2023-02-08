@@ -20,14 +20,15 @@ def change_test_dir(monkeypatch):
 
 
 @mock.patch.object(paho.mqtt.client.Client, "connect")
+@mock.patch.object(paho.mqtt.client.Client, "loop_start")
 class TestProgramArguments:
-    def test_no_arguments_no_config(self, mqtt_conn, monkeypatch):
+    def test_no_arguments_no_config(self, mqtt_conn, mqtt_start, monkeypatch):
         monkeypatch.setattr("sys.argv", ["prog"])
         with pytest.raises(ValueError) as e:
             hemon.app.main()
         assert "Missing configuration" in str(e.value)
 
-    def test_empty_config(self, mqtt_conn, change_test_dir, caplog, monkeypatch):
+    def test_empty_config(self, mqtt_conn, mqtt_start, change_test_dir, caplog, monkeypatch):
         monkeypatch.setattr("sys.argv", ["prog"])
         hemon.app.main()
 
@@ -35,7 +36,7 @@ class TestProgramArguments:
         res = [rec.message for rec in caplog.records if ("successfully read configuration" in rec.message)]
         assert bool(res)
 
-    def test_named_config_file(self, mqtt_conn, caplog, monkeypatch):
+    def test_named_config_file(self, mqtt_conn, mqtt_start, caplog, monkeypatch):
         monkeypatch.setattr("sys.argv", ["prog", "--config", str(fixture_data_dir / "hemon.cfg.yaml")])
         hemon.app.main()
 
@@ -56,9 +57,10 @@ class TestProgramArguments:
 
 
 @mock.patch.object(paho.mqtt.client.Client, "connect")
+@mock.patch.object(paho.mqtt.client.Client, "loop_start")
 class TestConfiguration:
 
-    def test_non_parseable_config(self, mqtt_conn, caplog, monkeypatch):
+    def test_non_parseable_config(self, mqtt_conn, mqtt_start, caplog, monkeypatch):
         monkeypatch.setattr("sys.argv", ["prog", "--config", str(fixture_data_dir / "cfg.non_parseable.yaml")])
         hemon.app.main()
 
