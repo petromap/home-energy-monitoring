@@ -77,7 +77,8 @@ see [making systemd service](systemctl/README.md).
 
 On live environment there must be at least TimescaleDB and MQTT broker and this application.
 And to be useful, some data collectors and reporting system as well.
-All this is modeled in docker swarm, see [Docker Instructions](docker/README.md). 
+This environment except data collectors and *hemon* itself is modeled in 
+docker swarm, see [Docker Instructions](docker/README.md). 
 Such swarm stack can be used to test and play with this messaging and reporting consept.
 
 ### Configuring and preparing the test environment
@@ -90,6 +91,12 @@ docker exec -it $(docker ps -q -f name=timescaledb) psql -U postgres -d test_iot
 Then import sample data:
 ```bash
 docker exec -it $(docker ps -q -f name=timescaledb) psql -U postgres -d test_iot -a -f /var/lib/postgresql/data/sample_data.sql
+```
+
+Let predefined users to publish and subscribe MQTT messages (do this only once, multiple calls will render the password file unusable):
+```bash
+docker exec -it $(docker ps -q -f name=mosquitto) mosquitto_passwd -U /mosquitto/config/pwfile
+# restart the mosquitto service
 ```
 
 Now, one should be able login into grafana and see some data in there or 
@@ -142,12 +149,6 @@ pytest
 ### Integration testing
 
 TODO!!
-
-
-Let predefined users to publish and subscribe MQTT messages (multiple calls will render the password file unusable):
-```bash
-docker exec -it $(docker ps -q -f name=mosquitto) mosquitto_passwd -U /mosquitto/config/pwfile
-```
 
 
 Note:
