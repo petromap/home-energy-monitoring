@@ -1,67 +1,59 @@
 # Home Energy Monitoring
 
-This and sensor node projects discussed in here aims to help monitoring your environment and energy consumption at home.
+This, with help of some sensor node projects aims to help monitoring your 
+environment and energy consumption at home.
 
-ecodan-modbus-mqtt
-home-energy-monitoring
+This repository contains docker stack as a reference how to store time-series 
+data and generate reports from measurements. But the real thing is the application 
+reading MQTT topic and storing incoming values into TimescaleDB (PostgreSQL).
+Let's call it as **hemon** from now on.
 
-https://github.com/timescale/examples/blob/master/air-quality/schema.sql
-
-
-EHST20D-YM9DR1.UK  
-PUD-SWM80YAA.UK
-
-TODO: describe what are the components of full stack
-TODO: explain mqtt2tsdb program
-TODO: message structure into MQTT paragraph
+### Message structure
+Message structure *hemon* understands and waits for is simple JSON document 
+with couple meta information and measured values in dictionary.
 
 
-### dev containers
-https://github.com/garystafford/iot-analytics-at-the-edge/tree/main/docker
- * https://docs.timescale.com/install/latest/installation-docker/
- * https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
- * https://hub.docker.com/_/eclipse-mosquitto
- * https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
+Example of minimal accepted message when matching to [configuration](#configuration):
+```json5
+{
+   "node": "backyard", // name of recognized sensor node
+   "time": 1672953813, // time of measurement, msg will be dropped if not > 0
+   "values":
+   {
+      "T": -0.5        // recognized measurement, key is the identifier from configuration
+   },                  // .. values are expected to be float (convertible to postgres FLOAT)
+   "read_status": 0    // optional: if present and nonzero message will be dropped
+}
+```
+### Configuration
+See example configuration and comments in 
+[hemon.cfg.example.yaml](hemon.cfg.example.yaml).
 
+Sensor node names and parameter value keys from incoming messages must be 
+defined in configuration. Only then values will get stored.
 
-https://github.com/fhemberger/mqtt_exporter
-
-https://programmaticponderings.com/tag/timescaledb/
-
-https://github.com/timescale/examples/tree/master/air-quality
-
-https://docs.timescale.com/timescaledb/latest/quick-start/python/
+Information of configured and nonexistent sensor nodes and parameters will 
+be stored into database once the application starts up. For now there is no 
+way to modify or delete these automatically, use database client tools for it.
 
 ### MQTT
 
-$SYS/broker/load/messages/received/+
-(see: mosquitto man)
+*Hemon* will connect to configured broker and subscribe all topics prefixed 
+with name in configuration parameter ```topic_prefix```. There is no other 
+logic what comes to topic names.
 
-### project struct
+### Database
 
-https://github.com/jiisaa/Mitsubishi
+*Hemon* stores received values into PostgreSQL database.
+For reporting using TimescaleDB is suggested.
 
-https://github.com/SwiCago/HeatPump
+Expected database schema can be found from 
+[sql/schema.sql](sql/schema.sql). It is written for 
+TimeScaleDB but bare tables can be used without it.
 
-https://github.com/tuomassiren/esp8266-dht22-mqtt-sensor/blob/master/src/main.cpp
-https://github.com/ycardon/esp8266-dht22-mqtt
-https://github.com/Obighbyd/ESP8266_MQTT_DHT22/blob/master/MQTT_ESP8266_temperature_humidity.ino
+## Installing the package
 
-### testing
-
-https://pypi.org/project/pytest-postgresql/
-
-https://gist.github.com/graphaelli/906b624c18f77f50da5cd0cd4211c3c8
-
-## TODO:
- * entry points in pyproject.toml
- * double check pyproject.toml URLs etc.
-
-*******************
-
-## Installing the MQTT to TimescaleDB package
-
-Installing the package requires couple easy steps:
+Installing hemon package requires couple easy steps:
  * [Create virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-and-using-virtual-environments) 
 for the software.
  * Download release and install the package into this virtual environment:
@@ -117,7 +109,7 @@ pytest -m load_data
 
 ## Development
 
-### Development Environment Creation
+### Create Development Environment
 
 Fork the repository and clone your fork to you computer.
 
@@ -133,6 +125,7 @@ source venv/bin/activate
 pip install .
 pip install .[tests]
 pip install -e .[dev]
+pip install -e .[tests]
 ```
 Before making changes willing to contribute, create a different branch with a name that should be unique.
 ```bash
@@ -149,7 +142,6 @@ pytest
 ### Integration testing
 
 TODO!!
-https://github.com/1technophile/OpenMQTTGateway/blob/development/main/main.ino
 
 
 Let predefined users to publish and subscribe MQTT messages (multiple calls will render the password file unusable):
