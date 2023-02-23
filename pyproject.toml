@@ -87,7 +87,7 @@ warn_redundant_casts = true
 mypy_path = "$MYPY_CONFIG_FILE_DIR/stubs"
 
 [tool.pylint.'MESSAGES CONTROL']
-disable = "C0114"
+disable = "C0103,C0114"
 
 [tool.pylint.'FORMAT']
 max-line-length = 127

@@ -21,6 +21,7 @@ _log = logging.getLogger(__name__)
 
 class MessageResult(IntEnum):
     """Result of handling  MQTT message."""
+
     READ_ERROR = -5
     NO_VALUES = -4
     NO_SUCH_NODE = -3
@@ -29,7 +30,9 @@ class MessageResult(IntEnum):
     SUCCESS = 0
 
 
-def main():
+def main() -> None:
+    """Run the module app."""
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=argparse.FileType("r"))
     args = parser.parse_args()
@@ -71,11 +74,11 @@ def main():
 
 
 def _on_mqtt_connect(client: mqtt.Client, userdata: typing.Any, flags: typing.Dict, rc: int):
-    _log.info("connected with result code " + str(rc))
+    _log.info("connected with result code %s", str(rc))
     client.subscribe(app.cfg.mqtt.topic_prefix + "/#")
 
 
-def _on_mqtt_log(client: mqtt.Client, userdata: typing.Any, level, buf):
+def _on_mqtt_log(client: mqtt.Client, userdata: typing.Any, level: int, buf: object) -> None:
     _log.log(level, buf)
 
 
@@ -85,8 +88,8 @@ def _handle_message(client: mqtt.Client, userdata: typing.Any, msg: mqtt.MQTTMes
     try:
         _log.debug("Message %s received [%s]: %s", str(msg.mid), msg.topic, str(msg.payload))
         doc = json.loads(msg.payload)
-    except ValueError as e:
-        _log.warning("message %s dropped, invalid payload - cause: %s", str(msg.mid), repr(e))
+    except ValueError as err:
+        _log.warning("message %s dropped, invalid payload - cause: %s", str(msg.mid), repr(err))
         return MessageResult.INVALID_PAYLOAD
 
     # some validations..
@@ -100,13 +103,13 @@ def _handle_message(client: mqtt.Client, userdata: typing.Any, msg: mqtt.MQTTMes
         return MessageResult.READ_ERROR
     # ... sensor must be known
     if not bool([sl for sl in app.cfg.sensor_locations if (doc["node"] == sl.node_name)]):
-        _log.debug("message %s dropped, unknown node \"%s\"", str(msg.mid), doc["node"])
+        _log.debug('message %s dropped, unknown node "%s"', str(msg.mid), doc["node"])
         return MessageResult.NO_SUCH_NODE
 
     # iterate through values and accept those with known parameter
     values = []
     for m in doc["values"]:
-        if bool([p for p in app.cfg.parameters if (m == p.key)]):
+        if bool([p for p in app.cfg.parameters if m == p.key]):
             values.append((m, doc["values"][m]))
     if len(values) == 0:
         _log.debug("message %s dropped, no accepted values", msg.mid)
@@ -114,15 +117,15 @@ def _handle_message(client: mqtt.Client, userdata: typing.Any, msg: mqtt.MQTTMes
 
     # accepted message with some known values...
     measurements = []
-    sensor = [sl for sl in app.cfg.sensor_locations if (doc["node"] == sl.node_name)][0]
+    sensor = [sl for sl in app.cfg.sensor_locations if doc["node"] == sl.node_name][0]
     for v in values:
-        parameter = [p for p in app.cfg.parameters if (v[0] == p.key)][0]
+        parameter = [p for p in app.cfg.parameters if v[0] == p.key][0]
         measurements.append((datetime.fromtimestamp(doc["time"], tz=timezone.utc), sensor.id, parameter.id, v[1]))
     db.insert_measurements(measurements)
     return MessageResult.SUCCESS
 
 
-def _setup_logging(cfg_yaml: str = None):
+def _setup_logging(cfg_yaml: str | None = None):
     if cfg_yaml and len(cfg_yaml) > 0:
         c = yaml.safe_load(cfg_yaml)
         logging.config.dictConfig(c)
@@ -135,7 +138,7 @@ def _setup_logging(cfg_yaml: str = None):
         logging.info("log level set to: %s", log_level_str)
 
 
-def _update_metadata_configuration():
+def _update_metadata_configuration() -> None:
     if len(app.cfg.parameters) == 0 and len(app.cfg.sensor_locations) == 0:
         return
     _log.debug("updating location and parameter tables")
