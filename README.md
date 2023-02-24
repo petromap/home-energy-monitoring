@@ -1,3 +1,6 @@
+[![build](https://github.com/petromap/home-energy-monitoring-dev/actions/workflows/build.yml/badge.svg)](https://github.com/petromap/home-energy-monitoring-dev/actions/workflows/build.yml)
+[![build-dist](https://github.com/petromap/home-energy-monitoring-dev/actions/workflows/build-dist.yaml/badge.svg)](https://github.com/petromap/home-energy-monitoring-dev/actions/workflows/build-dist.yaml)
+
 # Home Energy Monitoring
 
 This, with help of some sensor node projects aims to help monitoring your 
