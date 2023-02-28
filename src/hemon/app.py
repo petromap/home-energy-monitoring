@@ -18,6 +18,8 @@ from hemon import db
 
 _log = logging.getLogger(__name__)
 
+LOG_LEVEL_DEFAULT = "INFO"
+
 
 class MessageResult(IntEnum):
     """Result of handling  MQTT message."""
@@ -131,7 +133,7 @@ def _setup_logging(cfg_yaml: str | None = None):
         logging.config.dictConfig(c)
         _log.info("log level set to: %s", logging.getLevelName(logging.getLogger().level))
     else:
-        log_level_str = "INFO"
+        log_level_str = LOG_LEVEL_DEFAULT
         log_level = logging.getLevelName(log_level_str)
         logging.basicConfig(format="%(asctime)s %(levelname)s: %(message)s")
         logging.getLogger().setLevel(log_level)
