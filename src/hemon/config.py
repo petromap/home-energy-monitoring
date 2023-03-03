@@ -41,6 +41,21 @@ class MQTT(DataClassYAMLMixin):
     username: str
     password: str
 
+    qos: int = 0
+    """MQTT Quality of Service (QoS)"""
+
+    def client_clean_sessions(self) -> bool:
+        """
+        Should the broker remove all information about this client when it
+        disconnects.
+
+        Returns
+        -------
+        bool
+        True if qos is 1 or 2. See MQTT Quality of Service (QoS).
+        """
+        return not bool(self.qos)
+
 
 @dataclass
 class Database(DataClassYAMLMixin):

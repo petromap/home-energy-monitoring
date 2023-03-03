@@ -55,7 +55,7 @@ def main() -> None:
 
     _update_metadata_configuration()
 
-    mqtt_client = mqtt.Client(reconnect_on_failure=True)
+    mqtt_client = mqtt.Client(client_id="hemon", reconnect_on_failure=True, clean_session=app.cfg.mqtt.client_clean_sessions())
     mqtt_client.username_pw_set(app.cfg.mqtt.username, app.cfg.mqtt.password)
     mqtt_client.on_log = _on_mqtt_log
     mqtt_client.on_connect = _on_mqtt_connect
@@ -77,7 +77,7 @@ def main() -> None:
 
 def _on_mqtt_connect(client: mqtt.Client, userdata: typing.Any, flags: typing.Dict, rc: int):
     _log.info("connected with result code %s", str(rc))
-    client.subscribe(app.cfg.mqtt.topic_prefix + "/#")
+    client.subscribe(app.cfg.mqtt.topic_prefix + "/#", qos=app.cfg.mqtt.qos)
 
 
 def _on_mqtt_log(client: mqtt.Client, userdata: typing.Any, level: int, buf: object) -> None:

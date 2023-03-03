@@ -37,6 +37,8 @@ loop_time: 0
 mqtt:
   # MQTT topic to subscribe, all topics from this one
   topic_prefix: "hemon/sensor"
+  # Optional: MQTT Quality of Service (QoS). Default is 0.
+  #qos: 0
   host: "broker.example.host"
   port: 1883
   username: "guesswho"
