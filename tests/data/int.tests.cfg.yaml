@@ -4,15 +4,21 @@ logging_config: ""
 loop_time: 5
 mqtt:
   topic_prefix: "hemon/sensor"
+  qos: 2
   host: "localhost"
   port: 11883
   username: "pub_user"
   password: "guesswho"
 db:
-  dbname:
+  dbname: "test_iot"
   host: "localhost"
   port: 15432
-  username:
-  password:
-sensor_locations: []
-parameters: []
+  username: postgres
+  password: postgres1234
+sensor_locations:
+  - node_name: "backyard"
+    location_name: "behind the house"
+parameters:
+  - name: "Temperature (ºC)"
+    unit: "°C"
+    key: "T"

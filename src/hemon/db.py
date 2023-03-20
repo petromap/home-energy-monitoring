@@ -76,4 +76,5 @@ def insert_measurements(values: typing.List[typing.Tuple[datetime, int, int, flo
     with Cursor() as cursor:
         sql = "insert into measurements(measure_time, location_id, parameter_id, v) values (%s, %s, %s, %s)"
         for v in values:
+            _log.debug(sql, v[0], v[1], v[2], v[3])
             cursor.execute(sql, [v[0], v[1], v[2], v[3]])
