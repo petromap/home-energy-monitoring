@@ -54,7 +54,7 @@ Expected database schema can be found from
 [sql/schema.sql](sql/schema.sql). It is written for 
 TimeScaleDB but bare tables can be used without it.
 
-## Installing the package
+## Install and run the package
 
 Installing hemon package requires couple easy steps:
  * [Create virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-and-using-virtual-environments) 
@@ -151,9 +151,13 @@ pytest
 
 ### Integration testing
 
-TODO!!
+The integration test is rather robust and aims just to verify Docker stack can 
+be used. Don't expect it tests much the application.
 
+To run the test from command line, run:
+```bash
+pytest -m integration
+```
 
-Note:
-* Removes old data from named sensor(s)
+**Note:**
 * If docker stack is modified, change the code respectively
