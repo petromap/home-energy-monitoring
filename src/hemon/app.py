@@ -104,8 +104,9 @@ def _handle_message(client: mqtt.Client, userdata: typing.Any, msg: mqtt.MQTTMes
         _log.debug("message %s dropped, read error status = %s", str(msg.mid), str(doc["read_status"]))
         return MessageResult.READ_ERROR
     # ... sensor must be known
-    if not bool([sl for sl in app.cfg.sensor_locations if (doc["node"] == sl.node_name)]):
-        _log.debug('message %s dropped, unknown node "%s"', str(msg.mid), doc["node"])
+    if "node" not in doc.keys() or not bool([sl for sl in app.cfg.sensor_locations if (doc["node"] == sl.node_name)]):
+        node_name = "NODE_NAME_REQUIRED" if "node" not in doc.keys() else doc["node"]
+        _log.debug('message %s dropped, unknown node "%s"', str(msg.mid), node_name)
         return MessageResult.NO_SUCH_NODE
 
     # iterate through values and accept those with known parameter
